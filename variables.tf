@@ -17,5 +17,4 @@ variable "snowflake_user" {
 variable "snowflake_role" {
   type      = string
   sensitive = true
-  default = "ACCOUNTADMIN"
 }
