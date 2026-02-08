@@ -1,0 +1,51 @@
+name: "Deploy to DEV environment"
+
+on: 
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy-terraform-staging:
+    name: "Plan & Deploy Terraform plan on Staging"
+    runs-on: ubuntu-latest
+    environment: dev
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+      
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Format
+        run: terraform fmt -recursive -check
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan 
+        env:
+          TF_VAR_snowflake_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          TF_VAR_snowflake_user: ${{ secrets.SNOWFLAKE_USER }}
+          TF_VAR_snowflake_password: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          TF_VAR_snowflake_organization: ${{ secrets.SNOWFLAKE_ORGANIZATION }}
+          TF_VAR_snowflake_role: ${{ secrets.SNOWFLAKE_ROLE }}
+
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply -auto-approve
+        env:
+          TF_VAR_snowflake_account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          TF_VAR_snowflake_user: ${{ secrets.SNOWFLAKE_USER }}
+          TF_VAR_snowflake_password: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          TF_VAR_snowflake_organization: ${{ secrets.SNOWFLAKE_ORGANIZATION }}
+          TF_VAR_snowflake_role: ${{ secrets.SNOWFLAKE_ROLE }}
+
+          
