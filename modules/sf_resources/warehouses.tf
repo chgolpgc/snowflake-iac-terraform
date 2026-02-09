@@ -2,7 +2,7 @@
 resource "snowflake_warehouse" "tf_warehouse" {
   name                      = "TF_DEMO_WH"
   warehouse_type            = "STANDARD"
-  warehouse_size            = "XSMALL"
+  warehouse_size            = "SMALL"
   max_cluster_count         = 1
   min_cluster_count         = 1
   auto_suspend              = 60
